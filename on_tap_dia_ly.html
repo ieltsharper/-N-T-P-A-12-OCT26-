@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ôn tập Địa lý</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff;
+  --surface:#faf8ff;
+  --lav-50:#f5f1fd;
+  --lav-100:#ece4fb;
+  --lav-200:#dccff6;
+  --lav-400:#b39ce8;
+  --lav-600:#7c62c4;
+  --plum:#3f2f6b;
+  --text:#2c2440;
+  --muted:#6f6789;
+  --line:#e7e1f3;
+  --ok-bg:#e6f6ee; --ok-line:#7cc8a0; --ok-text:#1f6b45;
+  --no-bg:#fdecef; --no-line:#eb9aa8; --no-text:#9b2c40;
+  --on-accent:#ffffff;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    color-scheme: dark;
+    --bg:#1b1726;
+    --surface:#231e32;
+    --lav-50:#2a2440;
+    --lav-100:#342c4f;
+    --lav-200:#463b69;
+    --lav-400:#9a84d6;
+    --lav-600:#c3b2f2;
+    --plum:#e4dafc;
+    --text:#ece8f6;
+    --muted:#a9a1c2;
+    --line:#3a3252;
+    --ok-bg:#1d3a2c; --ok-line:#4f9d74; --ok-text:#a6e5c3;
+    --no-bg:#40212a; --no-line:#b05a6c; --no-text:#f5b5c1;
+    --on-accent:#1b1726;
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  font-family:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",sans-serif;
+  background:var(--bg);color:var(--text);
+  line-height:1.55;font-size:17px;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:720px;margin:0 auto;padding:28px 20px 64px}
+
+header{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:22px;flex-wrap:wrap}
+h1{margin:0;font-size:28px;font-weight:700;color:var(--plum);letter-spacing:-.01em}
+.sub{margin:4px 0 0;color:var(--muted);font-size:15px}
+.tools{display:flex;gap:8px;flex-wrap:wrap}
+
+.btn{
+  font:inherit;font-size:15px;font-weight:500;
+  border:1.5px solid var(--lav-200);background:var(--bg);color:var(--plum);
+  padding:9px 16px;border-radius:999px;cursor:pointer;
+  transition:background .15s,border-color .15s;
+}
+.btn:hover{background:var(--lav-50);border-color:var(--lav-400)}
+.btn:disabled{opacity:.45;cursor:not-allowed;background:var(--bg)}
+.btn.primary{background:var(--lav-600);border-color:var(--lav-600);color:var(--on-accent)}
+.btn.primary:hover{filter:brightness(1.06)}
+.btn.on{background:var(--lav-100);border-color:var(--lav-400)}
+:focus-visible{outline:3px solid var(--lav-400);outline-offset:2px}
+
+/* progress */
+.progress{margin-bottom:18px}
+.progress-row{display:flex;justify-content:space-between;font-size:14px;color:var(--muted);margin-bottom:8px}
+.progress-row b{color:var(--plum);font-weight:600}
+.bar{height:8px;background:var(--lav-100);border-radius:999px;overflow:hidden}
+.bar span{display:block;height:100%;width:0;background:var(--lav-400);border-radius:999px;transition:width .3s ease}
+
+/* question map */
+.map{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 22px}
+.map button{
+  width:34px;height:34px;border-radius:10px;font:inherit;font-size:13px;font-weight:500;
+  border:1.5px solid var(--line);background:var(--bg);color:var(--muted);cursor:pointer;
+}
+.map button.cur{border-color:var(--lav-600);color:var(--plum);font-weight:700}
+.map button.ok{background:var(--ok-bg);border-color:var(--ok-line);color:var(--ok-text)}
+.map button.no{background:var(--no-bg);border-color:var(--no-line);color:var(--no-text)}
+.map button.cur.ok,.map button.cur.no{box-shadow:0 0 0 2px var(--lav-600)}
+
+/* card */
+.card{
+  background:var(--surface);border:1.5px solid var(--line);border-radius:22px;
+  padding:26px 26px 22px;
+}
+.qhead{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.qnum{font-weight:700;color:var(--lav-600);font-size:15px}
+.tag{font-size:13px;padding:3px 10px;border-radius:999px;background:var(--lav-100);color:var(--plum)}
+.qtext{font-size:20px;font-weight:600;color:var(--text);margin:0 0 20px;line-height:1.5}
+
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{
+  display:flex;gap:14px;align-items:flex-start;text-align:left;width:100%;
+  font:inherit;color:var(--text);background:var(--bg);
+  border:1.5px solid var(--line);border-radius:14px;padding:13px 16px;cursor:pointer;
+  transition:border-color .15s,background .15s;
+}
+.opt:hover:not(:disabled){border-color:var(--lav-400);background:var(--lav-50)}
+.opt:disabled{cursor:default}
+.letter{
+  flex:none;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;
+  font-weight:700;font-size:14px;background:var(--lav-100);color:var(--plum);margin-top:-2px;
+}
+.multi .letter{border-radius:7px}
+.opt.sel{border-color:var(--lav-600);background:var(--lav-50)}
+.opt.sel .letter{background:var(--lav-600);color:var(--on-accent)}
+.opt.right{border-color:var(--ok-line);background:var(--ok-bg)}
+.opt.right .letter{background:var(--ok-line);color:#fff}
+.opt.wrong{border-color:var(--no-line);background:var(--no-bg)}
+.opt.wrong .letter{background:var(--no-line);color:#fff}
+.opt.missed{border-style:dashed;border-color:var(--ok-line)}
+
+.feedback{margin-top:16px;padding:12px 16px;border-radius:14px;font-weight:500;display:none}
+.feedback.ok{display:block;background:var(--ok-bg);color:var(--ok-text)}
+.feedback.no{display:block;background:var(--no-bg);color:var(--no-text)}
+.explain{margin-top:12px;padding:14px 16px;border-radius:14px;background:var(--lav-50);border-left:4px solid var(--lav-400);font-size:15.5px;line-height:1.65;color:var(--text)}
+.explain strong{display:block;color:var(--plum);font-weight:600;margin-bottom:4px}
+
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:20px}
+.hint{margin-top:18px;font-size:13px;color:var(--muted);text-align:center}
+
+/* results */
+.result{text-align:center;padding:36px 26px}
+.score{font-size:56px;font-weight:700;color:var(--lav-600);line-height:1;margin:6px 0 8px}
+.result p{color:var(--muted);margin:0 0 22px}
+.result .tools{justify-content:center}
+
+/* review list */
+.list{display:flex;flex-direction:column;gap:14px}
+.list .card{padding:20px 22px}
+.list .qtext{font-size:17px;margin-bottom:12px}
+.list ol{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.list li{display:flex;gap:10px;padding:8px 12px;border-radius:10px;font-size:15.5px}
+.list li .letter{width:26px;height:26px;font-size:13px}
+.list li.right{background:var(--ok-bg);color:var(--ok-text);font-weight:500}
+.list li.right .letter{background:var(--ok-line);color:#fff}
+
+.hidden{display:none!important}
+
+@media (max-width:560px){
+  body{font-size:16px}
+  .wrap{padding:20px 14px 48px}
+  h1{font-size:24px}
+  .card{padding:20px 16px 18px;border-radius:18px}
+  .qtext{font-size:18px}
+  .map button{width:31px;height:31px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Ôn tập Địa lý</h1>
+      <p class="sub">Bài 3, 4, 5, 6 – <span id="total"></span> câu hỏi</p>
+    </div>
+    <div class="tools">
+      <button class="btn" id="modeBtn" type="button">Xem đáp án tất cả</button>
+      <button class="btn" id="shuffleBtn" type="button" aria-pressed="false">Xáo trộn câu</button>
+    </div>
+  </header>
+
+  <!-- QUIZ -->
+  <section id="quiz">
+    <div class="progress">
+      <div class="progress-row"><span>Đã làm <b id="done">0</b>/<span id="total2"></span></span><span>Đúng <b id="correct">0</b></span></div>
+      <div class="bar"><span id="barFill"></span></div>
+    </div>
+    <div class="map" id="map" aria-label="Danh sách câu hỏi"></div>
+
+    <article class="card" id="card">
+      <div class="qhead">
+        <span class="qnum" id="qnum"></span>
+        <span class="tag" id="qtag"></span>
+      </div>
+      <p class="qtext" id="qtext"></p>
+      <div class="opts" id="opts"></div>
+      <div class="feedback" id="feedback" role="status"></div>
+      <div class="explain hidden" id="explain"><strong>Lời giải</strong><span id="explainText"></span></div>
+      <div class="nav">
+        <button class="btn" id="prevBtn" type="button">Câu trước</button>
+        <div style="display:flex;gap:10px">
+          <button class="btn primary hidden" id="checkBtn" type="button">Kiểm tra</button>
+          <button class="btn primary" id="nextBtn" type="button">Câu tiếp</button>
+        </div>
+      </div>
+    </article>
+    <p class="hint">Phím tắt: 1–5 chọn đáp án, Enter kiểm tra hoặc sang câu tiếp, ← → chuyển câu</p>
+  </section>
+
+  <!-- RESULT -->
+  <section id="result" class="hidden">
+    <article class="card result">
+      <div style="color:var(--muted);font-weight:500">Kết quả của bạn</div>
+      <div class="score" id="scoreBig"></div>
+      <p id="scoreText"></p>
+      <div class="tools">
+        <button class="btn primary" id="retryWrongBtn" type="button">Làm lại câu sai</button>
+        <button class="btn" id="restartBtn" type="button">Làm lại từ đầu</button>
+        <button class="btn" id="backBtn" type="button">Xem lại bài làm</button>
+      </div>
+    </article>
+  </section>
+
+  <!-- ANSWER LIST -->
+  <section id="review" class="hidden">
+    <div class="list" id="list"></div>
+  </section>
+</div>
+
+<script>
+const DATA = [{"q": "Mùa mưa ở dải đồng bằng ven biển nam Trung Bộ chịu tác động chủ yếu của", "type": "single", "o": ["áp thấp nhiệt đới và bão, gió mùa Tây Nam, gió Tây và gió mùa Đông Bắc", "dải hội tụ, tín phong bán cầu bắc và gió tây Nam từ Bắc Ấn Độ Dương", "gió hướng Đông Bắc, gió mùa Tây Nam, dải hội tụ, bão và áp thấp nhiệt đoiws", "gió mùa Tây nam, áp thấp nhiệt đới, gió Tây Nam từ Bắc ấn Độ Dương đến"], "a": [3], "e": "Mùa mưa ở dải đồng bằng ven biển Nam Trung Bộ đến muộn, tập trung vào thu – đông (khoảng tháng 9 đến tháng 12). Lúc này gió hướng Đông Bắc (gió mùa Đông Bắc và Tín phong) thổi từ biển vào, gặp địa hình núi chắn phía tây nên gây mưa lớn, cộng thêm dải hội tụ nhiệt đới, bão và áp thấp nhiệt đới hoạt động mạnh nhất ở khu vực này vào cuối mùa. Gió mùa Tây Nam đầu và giữa mùa hạ cũng gây mưa nhưng ít hơn."}, {"q": "Bắc Bộ có mưa nhiều vào mùa hạ chủ yếu do tác động của", "type": "single", "o": ["Tín Phong bán cầu Bắc và địa hình vùng núi, áp thấp nhiệt đới và dải hội tụ", "Gió mùa Tây nam, gió Tây, địa hình núi, bão, áp thấp nhiệt đoiws và dải hội tụ", "gió Tây nam từ Bắc Ấn Độ Dương đến, Tính phong bán cầu bắc và dải hội tụ", "gió mùa Tây Nam, gió Tây Nam từ bắc ấn độ dương đến, dải hội tụ và bão"], "a": [4], "e": "Mùa hạ, Bắc Bộ chịu ảnh hưởng của gió mùa mùa hạ: đầu mùa là gió Tây Nam từ Bắc Ấn Độ Dương, giữa và cuối mùa là gió mùa Tây Nam từ bán cầu Nam (vào Bắc Bộ đổi thành hướng Đông Nam). Các khối khí này nóng ẩm, kết hợp với dải hội tụ nhiệt đới và bão nên gây mưa lớn. Các phương án có \"Tín phong bán cầu Bắc\" hoặc \"gió Tây\" không đúng vì đó là những luồng gió khô, ít gây mưa."}, {"q": "các nhân tố nào sau đấy là chủ yếu tạo nên mùa mưa ở Trung Bộ nước ta", "type": "single", "o": ["Gió mùa Đông Bắc, gió Tây, áp thấp và dải hội tụ nhiệt đới", "Tín phong bán cầu Bắc, gió Tây, bão và dải hội tụ nhiệt đới", "Tín phong bán cầu bắc, gió Tây nam, áp thấp nhiệt đới, bão", "Gió mùa Tây Nam, dải hội tụ nhiệt đới, gió Đông Bắc và bão", "Tín phong bán cầu bắc, gió Tây Nam"], "a": [4], "e": "Mùa mưa ở Trung Bộ được tạo nên chủ yếu bởi: gió mùa Tây Nam (gây mưa đầu mùa hạ ở sườn Tây, cuối hạ ở ven biển), dải hội tụ nhiệt đới và bão (hoạt động mạnh vào tháng 9 – 11), cùng gió Đông Bắc thổi từ biển vào gặp dãy Trường Sơn gây mưa lớn vào thu – đông. Gió Tây (gió phơn) và Tín phong bán cầu Bắc lại gây khô nóng, không tạo nên mùa mưa."}, {"q": "Mùa mưa ở dải đồng bằng ven biển Bắc Trung Bộ chịu tác động chủ yếu của", "type": "single", "o": ["gió Tây nam từ Bắc Ấn Độ Dương đến, gió dodong bắc, bão, áp thấp nhiệt đới", "dải hội tụ và áp thấp nhiệt đới, bão, gió tây nam từ ấn độ dương đến", "áp thấp nhiệt đới và bão, gió mùa Tây Nam, gió Tây nam, gió Tây và gió mùa đông bắc", "gió mùa Tây Nam, gió mùa đông Bắc, bão, dải hội tụ và áp thấp nhiệt đới"], "a": [4], "e": "Đồng bằng ven biển Bắc Trung Bộ có mùa mưa lệch về thu – đông. Mưa do sự kết hợp của gió mùa Tây Nam (cuối hạ), dải hội tụ nhiệt đới, bão và áp thấp nhiệt đới (tập trung tháng 8 – 10), và gió mùa Đông Bắc đi qua biển vào đầu đông, gặp dãy Trường Sơn Bắc chắn gió nên gây mưa. Phương án có \"gió Tây\" là sai vì gió Tây (phơn Tây Nam) gây khô nóng cho vùng này."}, {"q": "Nam bộ có mưa nhiều vào mùa hạ chủ yếu do tác động của", "type": "single", "o": ["gió mùa tây nam, tín phong bán cầu bắc, bão, dải hội tụ, áp thấp nhiệt đới", "gió Tây Nam từ bắc ấn độ dương đến, tín phong bán cầu bắc và dải hội tụ", "gió mùa Tây Nam, dải hội tụ nhiệt đoiws, gió tây Nam từ bắc Ấn dodoj dương đến", "bão, dải hội tụ và áp thấp nhiệt đoiws, gió mùa tây nam và gió phơn tây nam"], "a": [3], "e": "Nam Bộ có mùa mưa từ tháng 5 đến tháng 10 – 11. Đầu mùa hạ, gió Tây Nam từ Bắc Ấn Độ Dương đến mang nhiều hơi ẩm gây mưa; giữa và cuối mùa hạ là gió mùa Tây Nam từ bán cầu Nam; dải hội tụ nhiệt đới đi qua cũng gây mưa lớn. Nam Bộ ít chịu ảnh hưởng của bão và không có gió phơn Tây Nam, còn Tín phong bán cầu Bắc là gió gây mùa khô."}, {"q": "Sự hình thành gió phơn tây nam ở các đồng bằng ven biển miền trung nước ta là do tác động kết họpw của", "type": "single", "o": ["gió tây nam từ bắc ấn độ dương đến và dãy trường sơn", "lãnh thổ hẹp ngang và hoạt động của các loại gió vào mùa hạ", "gió mùa tây nam từ nam bán cầu lên và dãy trường sơn", "địa hình núi đồi kéo dài ở phía tây và tín phong bán cầu bắc"], "a": [1], "e": "Đầu mùa hạ, gió Tây Nam từ Bắc Ấn Độ Dương thổi vào nước ta, khi vượt qua dãy Trường Sơn (và các dãy núi biên giới Việt – Lào) thì gây mưa ở sườn đón gió phía tây. Sang sườn đông, không khí đi xuống, nóng lên và khô đi, tạo thành gió phơn Tây Nam (gió Lào) khô nóng ở các đồng bằng ven biển miền Trung."}, {"q": "địa hình miền nam trung bộ và nam bộ…", "type": "multi", "o": ["địa hình đa dạng nhưng chủ yếu là đồi núi thấp và đồng bằng ven biển", "gồm các khối núi cổ, cao nguyên ba dan, sơn nguyên bóc mòn và đồng bằng", "địa hình có sự phân bậc là do tác động của nội lực và các quá trình ngoại lực", "gồm các dãy núi cao, cao nguyên đá vôi, thung lũng rộng và đồng bằng"], "a": [2, 3], "e": "B đúng: địa hình miền Nam Trung Bộ và Nam Bộ gồm khối núi cổ Kon Tum, các cao nguyên badan (Tây Nguyên), sơn nguyên bóc mòn và đồng bằng (Nam Bộ, ven biển). C đúng: các bề mặt bậc thang (núi, cao nguyên xếp tầng, thềm) là kết quả của nội lực (nâng lên không đều, phun trào badan) kết hợp với ngoại lực (bóc mòn, bồi tụ). A sai vì miền này có đồng bằng Nam Bộ rộng lớn và nhiều cao nguyên, không chỉ là đồng bằng ven biển. D là đặc điểm địa hình của miền Tây Bắc và Bắc Trung Bộ."}, {"q": "miền nam gần xích đạo honw, lại gắng voiws..", "type": "multi", "o": ["nam bộ có mùa mưa kéo dài honw bắc bộ do hoạt động kéo dài của gió mùa tây nam", "thời tiết miền nam ít biến động hơn miền bắc do hoạt động của dải hội tụ", "dải hội tụ nhiệt đới hình thành giữa tín phong bắc bán cầu và tín phong bán cầu nam", "sự di chuyển của dại hội tụ nhiệt đới làm tháng mưa cực đại lùi dần bắc vào nam"], "a": [1, 3, 4], "e": "A đúng: gió mùa Tây Nam hoạt động ở Nam Bộ từ khoảng tháng 5 đến tháng 10 – 11, nên mùa mưa ở đây kéo dài hơn Bắc Bộ. C đúng: dải hội tụ nhiệt đới là nơi gặp nhau của Tín phong hai bán cầu, gây nhiễu động và mưa lớn. D đúng: dải hội tụ di chuyển dần từ Bắc vào Nam trong nửa cuối năm nên tháng mưa cực đại lùi dần (Bắc Bộ tháng 8, Trung Bộ tháng 10 – 11, Nam Bộ tháng 9 – 10). B sai vì dải hội tụ lại là nguyên nhân gây mưa, nhiễu động; thời tiết miền Nam ít biến động là do hầu như không chịu tác động của gió mùa Đông Bắc và frông lạnh."}, {"q": "sự phân hóa của thiên nhiên theo chiều đông-tây được thể hiện khá rõ ở vùng đồi núi nưosc ta….", "type": "multi", "o": ["tại các vùng núi cao tây Bắc có nhiệt độ hạ thấp do địa hình cao hút từ các hướng tới", "vùng núi cao Tây Bắc nhiệt độ hạ thấp do gió mùa đông bắc kết hợp với độ cao địa hình", "vùng núi đông bắc có mùa đông lạnh nhatas cả nước do vị trí địa lí kết hợp với hướng núi", "vùng núi tây bắc có mùa đông ấm honw và khô hanh do vị trí và ảnh hưởng các dãy núi hướng tây bắc-đông nam đã ngăn cản gió mùa đông bắc"], "a": [2, 3, 4], "e": "B đúng: vùng núi cao Tây Bắc có nhiệt độ thấp chủ yếu do độ cao địa hình (lên cao nhiệt độ giảm), khi gió mùa Đông Bắc tràn tới (dù đã suy yếu) càng làm nhiệt độ hạ thấp. C đúng: vùng núi Đông Bắc có mùa đông lạnh nhất cả nước vì ở gần nguồn gió mùa Đông Bắc và các dãy núi hình cánh cung mở rộng ở phía bắc, tạo hành lang hút gió lạnh vào sâu. D đúng: dãy Hoàng Liên Sơn hướng tây bắc – đông nam chắn gió mùa Đông Bắc, nên Tây Bắc có mùa đông ấm hơn, ngắn hơn và khô hanh hơn Đông Bắc. A sai vì không có cơ chế \"địa hình cao hút gió từ các hướng tới\"."}, {"q": "Biện pháp bảo vệ đất trồng ở miền núi nước ta là ", "type": "single", "o": ["khai thác rùng. ", "xây hồ thủy điện", "tăng du canh du cư", "chống xói mòn"], "a": [4], "e": "Miền núi có địa hình dốc, mưa tập trung theo mùa nên đất dễ bị xói mòn, rửa trôi. Vì vậy biện pháp bảo vệ đất quan trọng nhất là chống xói mòn (làm ruộng bậc thang, trồng cây theo băng, đào hố vẩy cá, nông – lâm kết hợp, bảo vệ rừng). Khai thác rừng và du canh du cư lại làm đất bị thoái hóa nhanh hơn."}, {"q": "Biện pháp sử dụng có hiệu quả đất trồng ở đồng bằng nước ta là ", "type": "single", "o": ["đào hố vẫy cá", "trồng cây theo băng", "làm ruộng bậc thang", "đẩy mạnh thâm canh"], "a": [4], "e": "Đồng bằng có đất phù sa màu mỡ, địa hình bằng phẳng nhưng diện tích đất nông nghiệp bình quân đầu người thấp, nên cần đẩy mạnh thâm canh (tăng vụ, dùng giống tốt, thủy lợi, phân bón hợp lí) để nâng cao năng suất trên mỗi đơn vị diện tích. Đào hố vẩy cá, trồng cây theo băng, làm ruộng bậc thang là biện pháp dành cho vùng đồi núi."}, {"q": "Tính đa dạng sinh học cao thể hiện ở", "type": "single", "o": ["nguồn gen quý hiếm", "diện tích rừng lớn", "sự phát triển của sinh vật", "sự phân bố sinh vật"], "a": [1], "e": "Đa dạng sinh học thể hiện ở ba mặt: số lượng thành phần loài, các kiểu hệ sinh thái và nguồn gen. Nước ta có nguồn gen quý hiếm phong phú (nhiều loài đặc hữu, loài thú, chim, cây thuốc quý), vì vậy đây là biểu hiện của tính đa dạng sinh học cao. Diện tích rừng lớn hay sự phân bố sinh vật không trực tiếp phản ánh mức độ đa dạng sinh học."}, {"q": "biện pháp canh tác hạn chế xói mòn đất ở vùng đồi núi", "type": "single", "o": ["đắp đê ven sông", "đào hố vảy cá", "bón phân hữu cơ", "xây hồ thủy lợi"], "a": [2], "e": "Đào hố vẩy cá là cách đào các hố nhỏ xếp so le theo đường đồng mức trên sườn dốc, giúp giữ nước, giữ đất, hạn chế dòng chảy mặt cuốn trôi đất, nên là biện pháp canh tác chống xói mòn ở vùng đồi núi. Đắp đê ven sông là biện pháp chống lũ ở đồng bằng; bón phân hữu cơ để cải tạo đất; xây hồ thủy lợi để cung cấp nước tưới."}, {"q": "Biện pháp sử dụng có hiệu quả đất trồng ở đồng bằng nước ta KHÔNG PHẢI là ", "type": "single", "o": ["sử dụng các chế phẩm sinh học", "bón phân hữu cơ trong trồng trọt", "phát triển mạng lưới thủy lợi", "tiến hành canh tác nông lâm kết hợp"], "a": [4], "e": "Canh tác nông – lâm kết hợp là biện pháp phù hợp với vùng đồi núi (vừa trồng rừng vừa sản xuất nông nghiệp để chống xói mòn), không phải biện pháp sử dụng hiệu quả đất ở đồng bằng. Các phương án còn lại (dùng chế phẩm sinh học, bón phân hữu cơ, phát triển thủy lợi) đều giúp sử dụng hợp lí và bảo vệ đất đồng bằng."}, {"q": "Khí hậu của miền Nam Trung Bộ và Nam Bộ có ", "type": "single", "o": ["tính chất nhiệt đới, với nền nhiệt độ thấp và sự phân mùa rõ rệt. ", "sự tương phản giữa sườn đông và sườn tây của dãy trường sơn nam", "tính chất cận nhiệt đới, biên nhiệt độ lớn", "tính chất cận xích đạo, nền nhiệt cao và biên nhiệt độ lớn"], "a": [2], "e": "Dãy Trường Sơn Nam chắn gió nên khí hậu sườn đông và sườn tây tương phản rõ: khi Tây Nguyên (sườn tây) đón gió mùa Tây Nam vào mùa mưa thì đồng bằng ven biển Nam Trung Bộ (sườn đông) lại khô; ngược lại, thu – đông ven biển mưa nhiều thì Tây Nguyên là mùa khô. Phương án D sai ở ý \"biên nhiệt độ lớn\" vì khí hậu cận xích đạo có biên độ nhiệt năm nhỏ; A và C mô tả không đúng khí hậu của miền."}, {"q": "Rừng cây họ Dầu ở miền Nam Trung Bộ và Nam Bộ phát triển mạnh mẽ chủ yếu là do ", "type": "single", "o": ["đất phèn, mặn chiếm diện tích lớn", "mưa nhiều, nhiệt độ quanh năm cao", "khí hậu cận xích đạo, mùa khô rõ rệt", "nền nhiệt cao, biên nhiệt độ năm nhỏ"], "a": [3], "e": "Khí hậu cận xích đạo gió mùa với một mùa khô kéo dài, sâu sắc là điều kiện thích hợp cho rừng nhiệt đới khô và rừng thưa cây họ Dầu (nhiều loài rụng lá vào mùa khô), phân bố nhiều ở Tây Nguyên và Đông Nam Bộ. Đất phèn, mặn thích hợp với rừng ngập mặn, rừng tràm; còn mưa nhiều quanh năm thích hợp với rừng nhiệt đới ẩm thường xanh."}, {"q": "Sự phân hóa thiên nhiên giữa hai khu vực Đông Trường Sơn và Tây Nguyên chủ yếu do ", "type": "single", "o": ["độ cao địa hình và hướng các dãy úi", "ảnh hưởng của biển và lớp phủ thực vật", "tác động của gió mùa và hướng các dãy núi", "độ cao địa hình và ảnh hưởng của biển"], "a": [3], "e": "Khu vực Đông Trường Sơn (ven biển Nam Trung Bộ) và Tây Nguyên nằm ở hai sườn dãy Trường Sơn Nam. Do tác động của gió mùa kết hợp với hướng của các dãy núi chắn gió, mùa mưa và mùa khô ở hai khu vực diễn ra trái ngược nhau, từ đó tạo nên sự phân hóa thiên nhiên rõ rệt giữa hai sườn."}, {"q": "Thiên nhiên phần lãnh thổ phía Nam nước ta khác với phần lãnh thổ phía Bắc chủ yếu do tác động của ", "type": "single", "o": ["vị trí năm xa chí tuyến, tín phong bán cầu bắc, gió mùa tây nam và bão", "vị trí trong vùng nội chí tuyến, gió đông bắc, dải hội tụ và áp thấp nhiệt đới", "gió tây nam, vị trí ở gần với bán cầu nam, thời gian mặt troiwf lên thiên đỉnh", "gió đông bắc và tây nam, vị trí gần xích đạo, hai lần mặt troiwf lên thiên đỉnh"], "a": [4], "e": "Phần lãnh thổ phía Nam gần xích đạo, có hai lần Mặt Trời lên thiên đỉnh cách xa nhau nên nhận lượng bức xạ lớn, nhiệt độ cao quanh năm. Gió mùa Đông Bắc hầu như không ảnh hưởng (mùa khô chịu Tín phong Đông Bắc), mùa hạ chịu gió mùa Tây Nam, nên khí hậu cận xích đạo gió mùa với hai mùa mưa – khô rõ rệt, khác với phía Bắc có mùa đông lạnh."}, {"q": "Đặc điểm nào sau đây đúng với địa hình của miền Bắc và Đông Bắc Bắc Bộ? ", "type": "single", "o": ["đồi núi thấp và đồng bằng là chủ yếu, núi có hướng vòng cung", "núi cao là chủ yếu, núi có hướng taya bắc-đông nam", "dđồng bằng là chủ yếu, chỉ một số núi sót", "đồi và núi thấp là chủ yếu, núi có hướng tây-đông"], "a": [1], "e": "Miền Bắc và Đông Bắc Bắc Bộ có địa hình đồi núi thấp chiếm ưu thế (độ cao trung bình thấp), các dãy núi có hướng vòng cung (các cánh cung Sông Gâm, Ngân Sơn, Bắc Sơn, Đông Triều), cùng với đồng bằng Bắc Bộ mở rộng. Núi cao và hướng tây bắc – đông nam là đặc điểm của miền Tây Bắc và Bắc Trung Bộ."}, {"q": "Nguyên nhân nào sau đây là chủ yếu dẫn đến khí hậu nước ta phân hóa theo chiều Bắc – Nam? ", "type": "single", "o": ["số giờ chiếu sáng trong năm và dải hội tụ nội chí tuyến", "hoạt động của gió mùa và số giờ chiếu sáng trong năm", "dải hội tụ nội chí tuyến và sự thay đổi của góc nhập xạ", "sự thay đổi của góc nhập xạ và hoạt động của gió mùa"], "a": [4], "e": "Từ Bắc vào Nam, vĩ độ giảm nên góc nhập xạ tăng, lượng bức xạ và nhiệt độ tăng dần. Đồng thời gió mùa Đông Bắc suy yếu dần khi xuống phía nam (mạnh ở Bắc Bộ, gần như hết tác động ở phía nam dãy Bạch Mã). Hai nhân tố này làm khí hậu phân hóa theo chiều Bắc – Nam: phía Bắc có mùa đông lạnh, phía Nam nóng quanh năm."}, {"q": "Khoáng sản nổi bật của miền Nam Trung Bộ và Nam Bộ so với các miền khác là ", "type": "single", "o": ["dầu mỏ và khí tự nhiene", "apatit và chì kẽm", "than đa và than naua", "đá vôi và sét, cao lanh"], "a": [1], "e": "Thềm lục địa phía Nam (bể Cửu Long, Nam Côn Sơn, Malay – Thổ Chu) tập trung trữ lượng lớn dầu mỏ và khí tự nhiên, là khoáng sản nổi bật nhất của miền Nam Trung Bộ và Nam Bộ. Than, apatit, chì – kẽm chủ yếu ở miền Bắc và Đông Bắc Bắc Bộ."}, {"q": "Phần lãnh thổ phía Nam dãy Bạch Mã nước ta không có mùa đông lạnh chủ yếu do ", "type": "single", "o": ["tính phong thống trị, gió mùa đông bắc không ảnh hưởng", "nhận được lượng bức xạ lớn, gió mùa đông biến tính", "vị trí giáp gần biển đông, gió mùa đông bắc hoạt động yếu", "vị trí nằm gần xích đạo, nhận được lượng bức xạ rất lớn"], "a": [2], "e": "Phía nam dãy Bạch Mã có vị trí gần xích đạo nên nhận được lượng bức xạ lớn, nhiệt độ trung bình năm trên 25°C. Gió mùa Đông Bắc khi đi xuống phía nam đã bị biến tính (nóng lên, suy yếu) và bị dãy Bạch Mã chắn lại, nên vùng này không có mùa đông lạnh. Phương án A chưa chính xác vì gió mùa Đông Bắc vẫn có ảnh hưởng nhất định (gây mưa ở ven biển Trung Bộ vào thu – đông)."}, {"q": "Phần lãnh thổ phía Bắc nước ta vào mùa đông có nhiều biến động thời tiết chủ yếu do tác động của ", "type": "single", "o": ["vùng dodoif núi rộng và tín phong bán cầu bắc, hoạt động của froong", "tín phong bán cầu bắc, gió mùa đông bắc và hoạt động của frong", "hoạt động của frong, gió mùa đông bắc và các dãy núi vòng vung", "gió mùa đông bắc, hoạt động của frong và hướng các dãy núi"], "a": [2], "e": "Mùa đông ở phía Bắc có sự xen kẽ giữa các đợt gió mùa Đông Bắc lạnh và những thời kì gió mùa suy yếu, khi đó Tín phong bán cầu Bắc chiếm ưu thế làm thời tiết ấm lên. Khi các khối khí này gặp nhau tạo thành frông, gây mưa phùn, rét đậm. Sự thay thế luân phiên của các khối khí này làm thời tiết mùa đông biến động mạnh."}, {"q": "Khí hậu miền Nam phân thành hai mùa rõ rệt chủ yếu do tác động kết hợp của ", "type": "single", "o": ["tín phong đông bắc, dải hội tụ nhiệt đới và áp thấp nhiệt đới", "gió hướng tây nam, tín phong bán cầu bắc và hướng địa hình", "gió mùa tây nam, tín phong bán cầu bắc và độ cao địa hình", "tín phong bán cầu bắc với địa hình dãy núi trường sơn nam"], "a": [2], "e": "Khí hậu miền Nam có mùa mưa do gió hướng Tây Nam (gió Tây Nam từ Bắc Ấn Độ Dương và gió mùa Tây Nam) mang hơi ẩm từ biển vào, và mùa khô do Tín phong bán cầu Bắc (hướng đông bắc) khô, ổn định thống trị. Hướng của địa hình (đặc biệt dãy Trường Sơn Nam) đón hoặc chắn các luồng gió này làm sự phân mùa càng rõ rệt."}];
+const L = "ABCDE";
+
+let order = DATA.map((_, i) => i);   // indices into DATA
+let pos = 0;
+let state = {};                       // qIndex -> {sel:[], done:bool, ok:bool}
+let shuffled = false;
+
+const $ = id => document.getElementById(id);
+
+function same(a, b){ return a.length === b.length && [...a].sort().every((v,i)=>v===[...b].sort()[i]); }
+function st(qi){ return state[qi] || (state[qi] = {sel:[], done:false, ok:false}); }
+
+function render(){
+  const qi = order[pos], q = DATA[qi], s = st(qi);
+  $("qnum").textContent = "Câu " + (pos + 1);
+  $("qtag").textContent = q.type === "multi" ? "Chọn nhiều đáp án" : "Chọn một đáp án";
+  $("qtext").textContent = q.q;
+
+  const box = $("opts");
+  box.className = "opts" + (q.type === "multi" ? " multi" : "");
+  box.innerHTML = "";
+  q.o.forEach((text, i) => {
+    const n = i + 1;
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "opt";
+    const lt = document.createElement("span"); lt.className = "letter"; lt.textContent = L[i];
+    const tx = document.createElement("span"); tx.textContent = text;
+    b.append(lt, tx);
+    const picked = s.sel.includes(n), isAns = q.a.includes(n);
+    if (s.done){
+      b.disabled = true;
+      if (isAns && picked) b.classList.add("right");
+      else if (isAns) b.classList.add("right", "missed");
+      else if (picked) b.classList.add("wrong");
+    } else if (picked) b.classList.add("sel");
+    b.setAttribute("aria-pressed", picked);
+    b.onclick = () => choose(n);
+    box.appendChild(b);
+  });
+
+  const fb = $("feedback");
+  if (s.done){
+    const ansTxt = q.a.map(n => L[n-1]).join(", ");
+    fb.className = "feedback " + (s.ok ? "ok" : "no");
+    fb.textContent = s.ok ? "Chính xác!" : "Chưa đúng. Đáp án đúng: " + ansTxt;
+  } else { fb.className = "feedback"; fb.textContent = ""; }
+  $("explain").classList.toggle("hidden", !s.done);
+  $("explainText").textContent = q.e;
+
+  $("checkBtn").classList.toggle("hidden", q.type !== "multi" || s.done);
+  $("checkBtn").disabled = s.sel.length === 0;
+  $("prevBtn").disabled = pos === 0;
+  $("nextBtn").textContent = pos === order.length - 1 ? "Xem kết quả" : "Câu tiếp";
+
+  renderMap(); renderProgress();
+}
+
+function choose(n){
+  const qi = order[pos], q = DATA[qi], s = st(qi);
+  if (s.done) return;
+  if (q.type === "single"){
+    s.sel = [n]; finish(qi);
+  } else {
+    s.sel = s.sel.includes(n) ? s.sel.filter(x => x !== n) : [...s.sel, n];
+  }
+  render();
+}
+function finish(qi){
+  const s = st(qi);
+  s.done = true; s.ok = same(s.sel, DATA[qi].a);
+}
+function check(){
+  const qi = order[pos];
+  if (st(qi).sel.length){ finish(qi); render(); }
+}
+
+function renderMap(){
+  const m = $("map"); m.innerHTML = "";
+  order.forEach((qi, p) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.textContent = p + 1;
+    const s = state[qi];
+    if (s && s.done) b.classList.add(s.ok ? "ok" : "no");
+    if (p === pos) { b.classList.add("cur"); b.setAttribute("aria-current", "true"); }
+    b.setAttribute("aria-label", "Câu " + (p + 1));
+    b.onclick = () => { pos = p; render(); };
+    m.appendChild(b);
+  });
+}
+function renderProgress(){
+  const done = order.filter(qi => state[qi] && state[qi].done).length;
+  const ok = order.filter(qi => state[qi] && state[qi].ok).length;
+  $("done").textContent = done; $("correct").textContent = ok;
+  $("total2").textContent = order.length;
+  $("barFill").style.width = (done / order.length * 100) + "%";
+}
+
+function next(){
+  if (pos < order.length - 1){ pos++; render(); }
+  else showResult();
+}
+function showResult(){
+  const ok = order.filter(qi => state[qi] && state[qi].ok).length;
+  const done = order.filter(qi => state[qi] && state[qi].done).length;
+  $("scoreBig").textContent = ok + "/" + order.length;
+  let msg = "Bạn trả lời đúng " + ok + " trên " + order.length + " câu";
+  if (done < order.length) msg += " (còn " + (order.length - done) + " câu chưa làm)";
+  $("scoreText").textContent = msg + ".";
+  $("retryWrongBtn").disabled = ok === order.length;
+  show("result");
+}
+function show(id){
+  ["quiz","result","review"].forEach(s => $(s).classList.toggle("hidden", s !== id));
+  $("modeBtn").textContent = id === "review" ? "Quay lại làm bài" : "Xem đáp án tất cả";
+  window.scrollTo({top:0});
+}
+
+function shuffleArr(a){ a = [...a]; for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function start(indices){
+  order = shuffled ? shuffleArr(indices) : [...indices].sort((a,b)=>a-b);
+  indices.forEach(qi => delete state[qi]);
+  pos = 0; show("quiz"); render();
+}
+
+function buildList(){
+  const box = $("list"); box.innerHTML = "";
+  DATA.forEach((q, i) => {
+    const c = document.createElement("article"); c.className = "card";
+    const h = document.createElement("div"); h.className = "qhead";
+    const n = document.createElement("span"); n.className = "qnum"; n.textContent = "Câu " + (i+1);
+    h.appendChild(n);
+    if (q.type === "multi"){ const t = document.createElement("span"); t.className="tag"; t.textContent="Chọn nhiều đáp án"; h.appendChild(t); }
+    const p = document.createElement("p"); p.className = "qtext"; p.textContent = q.q;
+    const ol = document.createElement("ol");
+    q.o.forEach((text, j) => {
+      const li = document.createElement("li");
+      if (q.a.includes(j+1)) li.className = "right";
+      const lt = document.createElement("span"); lt.className = "letter"; lt.textContent = L[j];
+      const tx = document.createElement("span"); tx.textContent = text;
+      li.append(lt, tx); ol.appendChild(li);
+    });
+    const ex = document.createElement("div"); ex.className = "explain";
+    const et = document.createElement("strong"); et.textContent = "Lời giải";
+    const es = document.createElement("span"); es.textContent = q.e;
+    ex.append(et, es);
+    c.append(h, p, ol, ex); box.appendChild(c);
+  });
+}
+
+$("total").textContent = DATA.length;
+$("prevBtn").onclick = () => { if (pos > 0){ pos--; render(); } };
+$("nextBtn").onclick = next;
+$("checkBtn").onclick = check;
+$("restartBtn").onclick = () => start(DATA.map((_, i) => i));
+$("retryWrongBtn").onclick = () => start(order.filter(qi => !(state[qi] && state[qi].ok)));
+$("backBtn").onclick = () => { pos = 0; show("quiz"); render(); };
+$("modeBtn").onclick = () => {
+  if ($("review").classList.contains("hidden")){ buildList(); show("review"); }
+  else { show("quiz"); render(); }
+};
+$("shuffleBtn").onclick = () => {
+  shuffled = !shuffled;
+  $("shuffleBtn").classList.toggle("on", shuffled);
+  $("shuffleBtn").setAttribute("aria-pressed", shuffled);
+  $("shuffleBtn").textContent = shuffled ? "Đang xáo trộn" : "Xáo trộn câu";
+  state = {}; start(DATA.map((_, i) => i));
+};
+
+document.addEventListener("keydown", e => {
+  if ($("quiz").classList.contains("hidden")) return;
+  if (e.target.tagName === "BUTTON" && e.key === "Enter") return;
+  const q = DATA[order[pos]], s = st(order[pos]);
+  if (/^[1-5]$/.test(e.key) && +e.key <= q.o.length) choose(+e.key);
+  else if (e.key === "Enter"){ if (q.type === "multi" && !s.done && s.sel.length) check(); else if (s.done) next(); }
+  else if (e.key === "ArrowRight" && pos < order.length - 1){ pos++; render(); }
+  else if (e.key === "ArrowLeft" && pos > 0){ pos--; render(); }
+});
+
+render();
+</script>
+</body>
+</html>
